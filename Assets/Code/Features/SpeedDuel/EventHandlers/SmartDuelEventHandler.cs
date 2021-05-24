@@ -20,6 +20,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
         private const string PlaymatZonesPath = "Playmat/Zones";
         private const string SetCardKey = "SetCard";
         private const string ParticlesKey = "Particles";
+        private const string FusionParticlesKey = "FusionParticles";
 
         private ISmartDuelServer _smartDuelServer;
         private IDataManager _dataManager;
@@ -27,6 +28,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
         private ModelComponentsManager.Factory _modelFactory;
 
         private GameObject _speedDuelField;
+        private bool _isFusionSummon = false;
 
         #region Properties
 
@@ -62,6 +64,12 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
         #endregion
 
         #region Lifecycle
+
+        private void Awake()
+        {
+            _modelEventHandler.OnFusionSummon += OnFusionSummon;
+            _modelEventHandler.OnFinishFusion += FinishFusion;
+        }
 
         private void OnDestroy()
         {
@@ -172,6 +180,9 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
                 case CardPosition.FaceUp:
                     HandleFaceUpPosition(instantiatedModel, zone, hasSetCard, setCardModel);
                     break;
+                case CardPosition.FaceDown:
+                    HandleFaceDownPosition(zone, hasSetCard, instantiatedModel.name);
+                    break;
                 case CardPosition.FaceUpDefence:
                     HandleFaceUpDefencePosition(instantiatedModel, zone, hasSetCard, setCardModel);
                     break;
@@ -221,6 +232,25 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
                 setCardModel.SetActive(false);
                 _dataManager.SaveGameObject(SetCardKey, setCardModel);
             }
+        }
+
+        private void HandleFaceDownPosition(Transform zone, bool hasSetCard, string cardId)
+        {
+            if (!hasSetCard)
+            {
+                var setCard = GetGameObject(SetCardKey, zone.position, zone.rotation);
+                if (setCard == null)
+                {
+                    Debug.LogWarning("The setCard queue is empty :(");
+                    return;
+                }
+
+                InstantiatedModels.Add($"{zone.name}:{SetCardKey}", setCard);
+
+                HandlePlayCardModelEvents(default, zone.name, cardId, false);
+            }
+
+            _modelEventHandler.RaiseChangeVisibilityEvent(zone.name, false);
         }
 
         private void HandleFaceDownDefencePosition(Transform zone, bool hasSetCard, string cardId)
@@ -290,6 +320,12 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
 
         private void OnRemoveCardEventReceived(RemoveCardEvent removeCardEvent)
         {
+            if (_isFusionSummon)
+            {
+                HandleFusionSummon(removeCardEvent);
+                return;
+            }
+
             var modelExists = InstantiatedModels.TryGetValue(removeCardEvent.ZoneName, out var model);
             if (!modelExists)
             {
@@ -326,6 +362,33 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
             StartCoroutine(RecycleGameObject(SetCardKey, setCard));
         }
 
+        #region SpecialSummonEvents
+
+        private void HandleFusionSummon(RemoveCardEvent removeCardEvent)
+        {
+            var modelExists = InstantiatedModels.TryGetValue(removeCardEvent.ZoneName, out var model);
+            if(!modelExists)
+            {
+                return;
+            }
+            
+            var fusionParticles = GetGameObject(FusionParticlesKey, model.transform.position, model.transform.rotation);
+            _modelEventHandler.RaiseChangeVisibilityEvent(removeCardEvent.ZoneName, false);
+            _modelEventHandler.FuseMonsters(removeCardEvent.ZoneName);
+
+            StartCoroutine(RecycleGameObject(model.name, model, 2));
+
+            InstantiatedModels.Remove(removeCardEvent.ZoneName);
+
+            if (InstantiatedModels.ContainsKey($"{removeCardEvent.ZoneName}:{SetCardKey}"))
+            {
+                _modelEventHandler.RaiseEventByEventName(ModelEvent.DestroySetMonster, removeCardEvent.ZoneName);
+                RemoveSetCard(removeCardEvent);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         private GameObject GetGameObject(string key, Vector3 position, Quaternion rotation)
@@ -338,13 +401,23 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.EventHandlers
             return model;
         }
 
-        private IEnumerator RecycleGameObject(string key, GameObject model)
+        private IEnumerator RecycleGameObject(string key, GameObject model, float time = RemoveCardDurationInSeconds)
         {
-            yield return new WaitForSeconds(RemoveCardDurationInSeconds);
+            yield return new WaitForSeconds(time);
 
             model.SetActive(false);
 
             _dataManager.SaveGameObject(key.RemoveCloneSuffix(), model);
+        }
+
+        private void OnFusionSummon()
+        {
+            _isFusionSummon = true;
+        }
+
+        private void FinishFusion()
+        {
+            _isFusionSummon = false;
         }
 
         #endregion

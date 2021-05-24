@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 3554101730712823976}
   - component: {fileID: 8081405642296080773}
   - component: {fileID: 9154572003788197277}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CardSleeveImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

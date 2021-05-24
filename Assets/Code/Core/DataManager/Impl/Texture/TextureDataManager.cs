@@ -2,7 +2,6 @@
 using AssemblyCSharp.Assets.Code.Core.DataManager.Interface.Texture;
 using AssemblyCSharp.Assets.Code.Core.Storage.Interface.Texture;
 using AssemblyCSharp.Assets.Code.Core.YGOProDeck.Interface;
-using UnityEngine;
 using Zenject;
 
 namespace AssemblyCSharp.Assets.Code.Core.DataManager.Impl.Texture
@@ -23,8 +22,6 @@ namespace AssemblyCSharp.Assets.Code.Core.DataManager.Impl.Texture
 
         public async Task<UnityEngine.Texture> GetCardImage(string cardId)
         {
-            Debug.Log($"GetCardImage(cardId: {cardId})");
-
             var image = _textureStorageProvider.GetTexture(cardId);
             if (image != null)
             {

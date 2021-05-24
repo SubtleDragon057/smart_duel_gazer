@@ -35,6 +35,11 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Pa
 
         private void OnMonsterDestruction(SkinnedMeshRenderer[] renderers)
         {
+            if(renderers == null)
+            {
+                return;
+            }
+
             SetMeshShape(renderers[0]);
             _particleSystem.Play();
             _eventHandler.OnMonsterRemoval -= OnMonsterDestruction;

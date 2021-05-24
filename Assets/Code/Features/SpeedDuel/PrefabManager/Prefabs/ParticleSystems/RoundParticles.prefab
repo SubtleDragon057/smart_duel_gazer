@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4096146142539288914}
   - component: {fileID: 2985529073759447193}
   m_Layer: 0
-  m_Name: Destruction Explosion
+  m_Name: RoundParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4817,7 +4817,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4875,4 +4875,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bef16c5a92945c438a31f73927ab1af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _eventHandler: {fileID: 11400000, guid: 37a7f3edd99789540b4fb589a8908f82, type: 2}

@@ -27,6 +27,11 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelEventsHandler
         private event Action<string, string, bool> _OnSummonSetCard;
         private event Action<SkinnedMeshRenderer[]> _OnMonsterRemoval;
 
+        private event Action _OnFusionActivated;
+        private event Action _OnFusionSummon;
+        private event Action<string> _OnFuseMonsters;
+        private event Action _OnFinishFusion;
+
         #region Event Accessors
 
         public event Action<GameObject> OnActivatePlayfield
@@ -99,6 +104,26 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelEventsHandler
             add => _OnMonsterRemoval += value;
             remove => _OnMonsterRemoval -= value;
         }
+        public event Action OnFusionSummon 
+        {
+            add => _OnFusionSummon += value;
+            remove => _OnFusionSummon -= value;
+        }
+        public event Action<string> OnFuseMonsters
+        {
+            add => _OnFuseMonsters += value;
+            remove => _OnFuseMonsters -= value;
+        }
+        public event Action OnFinishFusion
+        {
+            add => _OnFinishFusion += value;
+            remove => _OnFinishFusion -= value;
+        }
+        public event Action OnFusionActivated
+        {
+            add => _OnFusionActivated += value;
+            remove => _OnFusionActivated -= value;
+        }
 
         #endregion
 
@@ -169,6 +194,30 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelEventsHandler
         public void RaiseMonsterRemovalEvent(SkinnedMeshRenderer[] renderers)
         {
             _OnMonsterRemoval?.Invoke(renderers);
+        }
+
+        #endregion
+
+        #region Fusion Events
+
+        public void FusionSummon()
+        {
+            _OnFusionSummon?.Invoke();
+        }
+
+        public void FuseMonsters(string zone)
+        {
+            _OnFuseMonsters?.Invoke(zone);
+        }
+
+        public void FinishFusion()
+        {
+            _OnFinishFusion?.Invoke();
+        }
+        
+        public void FusionActivated()
+        {
+            _OnFusionActivated?.Invoke();
         }
 
         #endregion

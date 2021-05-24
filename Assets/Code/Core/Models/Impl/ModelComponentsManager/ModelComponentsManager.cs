@@ -13,10 +13,18 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
         private ModelEventHandler _eventHandler;
 
         private Animator _animator;
-        private SkinnedMeshRenderer[] _renderers;
+        private SkinnedMeshRenderer[] _skinnedRenderers;
+        private MeshRenderer[] _meshRenderers;
         private ModelSettings _settings;
         private string _zone;
         private bool areRenderersEnabled;
+
+        #region Properties
+
+        public ModelEventHandler EventHandler { get => _eventHandler; }
+        public string Zone { get => _zone; }
+
+        #endregion
 
         #region Constructor
 
@@ -33,7 +41,13 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            _renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+            _skinnedRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            if(_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers = GetComponentsInChildren<MeshRenderer>();
+            }
+
             _settings = GetComponent<ModelSettings>();            
         }
 
@@ -60,6 +74,8 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
             _eventHandler.OnChangeMonsterVisibility += SetMonsterVisibility;
             _eventHandler.OnDestroyMonster += DestroyMonster;
 
+            _eventHandler.OnFuseMonsters += FuseMonsters;
+
             _eventHandler.OnActivatePlayfield += ActivatePlayfield;
             _eventHandler.OnPickupPlayfield += PickupPlayfield;
         }
@@ -71,6 +87,8 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
             _eventHandler.OnRevealSetMonster -= RevealSetMonster;
             _eventHandler.OnChangeMonsterVisibility -= SetMonsterVisibility;
             _eventHandler.OnDestroyMonster -= DestroyMonster;
+
+            _eventHandler.OnFuseMonsters -= FuseMonsters;
 
             _eventHandler.OnActivatePlayfield -= ActivatePlayfield;
             _eventHandler.OnPickupPlayfield -= PickupPlayfield;
@@ -98,10 +116,23 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
                 return;
             }
 
-            _renderers.SetRendererVisibility(true);
-            areRenderersEnabled = true;
             _animator.SetBool(AnimatorParameters.DefenceBool, false);
             _animator.SetTrigger(AnimatorParameters.SummoningTrigger);
+
+            if(_settings.MonsterType == MonsterType.Fusion)
+            {
+                _eventHandler.FinishFusion();
+            }
+
+            if(_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers.SetRendererVisibility(true);
+                areRenderersEnabled = true;
+                return;
+            }
+            
+            _skinnedRenderers.SetRendererVisibility(true);
+            areRenderersEnabled = true;
         }
 
         private void RevealSetMonster(string zone)
@@ -121,8 +152,25 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
                 return;
             }
 
-            _renderers.SetRendererVisibility(state);
+            if (_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers.SetRendererVisibility(state);
+                areRenderersEnabled = state;
+                return;
+            }
+
+            _skinnedRenderers.SetRendererVisibility(state);
             areRenderersEnabled = state;
+        }
+
+        private void FuseMonsters(string zone)
+        {
+            if(_zone != zone)
+            {
+                return;
+            }
+
+            _animator.SetTrigger(AnimatorParameters.FusionTrigger);
         }
 
         private void DestroyMonster(string zone)
@@ -143,19 +191,38 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
 
         private void ActivateParticlesAndRemoveModel()
         {
-            _eventHandler.RaiseMonsterRemovalEvent(_renderers);
-            _renderers.SetRendererVisibility(false);
             _eventHandler.OnDestroyMonster -= DestroyMonster;
+
+            if (_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers.SetRendererVisibility(true);
+                return;
+            }
+
+            _eventHandler.RaiseMonsterRemovalEvent(_skinnedRenderers);
+            _skinnedRenderers.SetRendererVisibility(false);
         }
 
         private void ActivatePlayfield(GameObject playfield)
         {
-            _renderers.SetRendererVisibility(areRenderersEnabled);
+            if (_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers.SetRendererVisibility(areRenderersEnabled);
+                return;
+            }
+
+            _skinnedRenderers.SetRendererVisibility(areRenderersEnabled);
         }
         
         private void PickupPlayfield()
         {
-            _renderers.SetRendererVisibility(false);
+            if (_skinnedRenderers.Length == 0)
+            {
+                _meshRenderers.SetRendererVisibility(true);
+                return;
+            }
+
+            _skinnedRenderers.SetRendererVisibility(false);
         }
 
         public class Factory : PlaceholderFactory<GameObject, ModelComponentsManager>
@@ -165,9 +232,9 @@ namespace AssemblyCSharp.Assets.Code.Core.Models.Impl.ModelComponentsManager
 
     public static class ModelComponentUtilities
     {
-        public static void SetRendererVisibility(this SkinnedMeshRenderer[] renderers, bool visibility)
+        public static void SetRendererVisibility(this Renderer[] renderers, bool visibility)
         {
-            foreach (SkinnedMeshRenderer item in renderers)
+            foreach (Renderer item in renderers)
             {
                 item.enabled = visibility;
             }

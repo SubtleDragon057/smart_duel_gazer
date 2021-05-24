@@ -84,6 +84,8 @@ namespace AssemblyCSharp.Assets.Code.Di
                 .FromFactory<PrefabFactory<DestructionParticles>>();
             Container.BindFactory<GameObject, SetCard, SetCard.Factory>()
                 .FromFactory<PrefabFactory<SetCard>>();
+            Container.BindFactory<GameObject, FusionParticles, FusionParticles.Factory>()
+                .FromFactory<PrefabFactory<FusionParticles>>();
 
             #endregion
         }

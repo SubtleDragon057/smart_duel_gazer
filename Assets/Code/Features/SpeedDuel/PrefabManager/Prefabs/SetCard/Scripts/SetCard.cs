@@ -52,6 +52,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Se
         {
             _zone = null;
             currentState = CurrentState.FaceDown;
+            _animator.SetBool(AnimatorParameters.RemoveCardBool, false);
 
             UnsubscribeFromEvents();
         }
@@ -69,7 +70,6 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Se
             _modelEventHandler.OnSetCardRemove += OnSpellTrapRemove;
             _modelEventHandler.OnRevealSetMonster += SetMonsterEvent;
             _modelEventHandler.OnDestroySetMonster += DestroySetMonster;
-            
 
             _modelEventHandler.OnActivatePlayfield += ActivatePlayfield;
             _modelEventHandler.OnPickupPlayfield += PickupPlayfield;
@@ -98,7 +98,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Se
             {
                 return;
             }
-            
+
             if (isSetMonster)
             {
                 SetMonster();
@@ -207,6 +207,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Se
             }
 
             _animator.SetTrigger(AnimatorParameters.RevealSetMonsterTrigger);
+            _animator.SetBool(AnimatorParameters.RemoveCardBool, true);
         }
 
         #endregion
@@ -215,8 +216,6 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager.Prefabs.Se
 
         private async Task GetAndDisplayCardImage(string cardId)
         {
-            Debug.Log($"GetAndDisplayCardImage(cardId: {cardId})", this);
-
             var image = await _dataManager.GetCardImage(cardId.RemoveCloneSuffix());
             if (image == null)
             {

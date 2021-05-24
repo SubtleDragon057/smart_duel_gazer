@@ -38,6 +38,8 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel
 
         private void Awake()
         {
+            _menus.SetActive(false);
+            
             _modelEventHandler.OnActivatePlayfield += ActivatePlayfieldMenus;
             _modelEventHandler.OnPickupPlayfield += RemovePlayfieldMenus;
         }
@@ -93,15 +95,14 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel
 
         public void RotatePlaymat(float rotation) => _playmatShell.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
-        public void FlipPlaymat(bool state)
+        public void FlipPlaymat()
         {
-            if (state)
-            {
-                _playmatShell.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                return;
-            }
+            var oldRotation = _playmatShell.transform.rotation.y;
+            var newRotation = oldRotation + 180;
 
-            _playmatShell.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            print(newRotation);
+
+            _playmatShell.transform.rotation = Quaternion.Euler(0, newRotation, 0);
         }
 
 

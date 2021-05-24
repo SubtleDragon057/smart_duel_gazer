@@ -8,6 +8,7 @@ namespace AssemblyCSharp.Assets.Code.UIComponents.Constants
             
         public static readonly int SummoningTrigger = Animator.StringToHash("SummoningTrigger");
         public static readonly int DeathTrigger = Animator.StringToHash("Death");
+        public static readonly int FusionTrigger = Animator.StringToHash("FusionSummon");
         public static readonly int ActivateSpellOrTrapTrigger = Animator.StringToHash("ActivateSpellTrap");
         public static readonly int ReturnSpellTrapToFaceDown = Animator.StringToHash("ReturnToFaceDown");
         public static readonly int RemoveSetCardTrigger = Animator.StringToHash("RemoveSetCard");
@@ -18,6 +19,7 @@ namespace AssemblyCSharp.Assets.Code.UIComponents.Constants
         public static readonly int FadeInSetCardTrigger = Animator.StringToHash("FadeIn");
 
         public static readonly int DefenceBool = Animator.StringToHash("IsDefence");
+        public static readonly int RemoveCardBool = Animator.StringToHash("RemoveCard");
         public static readonly int RotatePlatformBool = Animator.StringToHash("Rotate");
         public static readonly int MainMenuRotateBool = Animator.StringToHash("MainMenuRotate");
 

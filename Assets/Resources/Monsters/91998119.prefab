@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!65 &2895681205772531140
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2386648628111750161}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.006382842, y: 0.006789597, z: 0.007158114}
+  m_Center: {x: 0.00008292894, y: 0.0032841256, z: 0.0003728381}
 --- !u!95 &5602269859740430632
 Animator:
   serializedVersion: 3
@@ -44,19 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _modelScale: {x: 60, y: 60, z: 60}
---- !u!65 &2895681205772531140
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2386648628111750161}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.006382842, y: 0.006789597, z: 0.007158114}
-  m_Center: {x: 0.00008292894, y: 0.0032841256, z: 0.0003728381}
+  _monsterType: 2
 --- !u!1 &8526290486721382703
 GameObject:
   m_ObjectHideFlags: 0

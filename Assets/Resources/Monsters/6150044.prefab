@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _modelScale: {x: 50, y: 50, z: 50}
+  _monsterType: 2
 --- !u!114 &2872097887425981266
 MonoBehaviour:
   m_ObjectHideFlags: 0

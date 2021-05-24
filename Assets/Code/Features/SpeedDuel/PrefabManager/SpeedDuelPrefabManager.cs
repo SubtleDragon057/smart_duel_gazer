@@ -13,18 +13,22 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager
     public class SpeedDuelPrefabManager : MonoBehaviour
     {
         private const string ParticlesKey = "Particles";
+        private const string FusionParticlesKey = "FusionParticles";
         private const string SetCardKey = "SetCard";
 
         private const int AmountToInstantiate = 8;
 
         [SerializeField]
-        private GameObject _particles;
+        private GameObject _destructionParticles;
+        [SerializeField]
+        private GameObject _fusionParticles;
         [SerializeField]
         private GameObject _setCard;
 
         private IDataManager _dataManager;
         private SetCard.Factory _setCardFactory;
         private DestructionParticles.Factory _particleFactory;
+        private FusionParticles.Factory _fusionFactory;
 
         #region Constructor
 
@@ -32,11 +36,13 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager
         public void Construct(
             IDataManager dataManager,
             SetCard.Factory setCardFactory,
-            DestructionParticles.Factory particlesFactory)
+            DestructionParticles.Factory particlesFactory,
+            FusionParticles.Factory fusionFactory)
         {
             _dataManager = dataManager;
             _setCardFactory = setCardFactory;
             _particleFactory = particlesFactory;
+            _fusionFactory = fusionFactory;
         }
 
         #endregion
@@ -47,6 +53,7 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager
         {
             InstantiatePrefabs(SetCardKey, AmountToInstantiate);
             InstantiatePrefabs(ParticlesKey, AmountToInstantiate);
+            InstantiatePrefabs(FusionParticlesKey, AmountToInstantiate);
 
             // TODO: pre-instantiate models from deck:
             // Recommend sending over deck information (ie. which/how many models) in order to have them ready
@@ -72,7 +79,8 @@ namespace AssemblyCSharp.Assets.Code.Features.SpeedDuel.PrefabManager
             return key switch
             {
                 SetCardKey => _setCardFactory.Create(_setCard).transform.gameObject,
-                ParticlesKey => _particleFactory.Create(_particles).transform.gameObject,
+                ParticlesKey => _particleFactory.Create(_destructionParticles).transform.gameObject,
+                FusionParticlesKey => _fusionFactory.Create(_fusionParticles).transform.gameObject,
                 _ => null,
             };
         }
