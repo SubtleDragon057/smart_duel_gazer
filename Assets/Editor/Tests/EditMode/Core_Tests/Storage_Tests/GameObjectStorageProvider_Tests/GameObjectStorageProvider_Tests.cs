@@ -5,26 +5,28 @@ using NUnit.Framework;
 
 public class GameObjectStorageProvider_Tests
 {
+    private string testKey = "testKey";
+        
     [Test]
-    public void Given_AGameObjectDoesntExist_When_ItIsCalled_Then_ItShouldReturnNull()
+    public void Given_AGameObjectThatDoesntExist_When_ItIsCalled_Then_ItShouldReturnNull()
     {
         var testResourcesProvider = Substitute.For<IResourcesProvider>();
         var testGameObjectStorageProvider = new GameObjectStorageProvider(testResourcesProvider);
 
-        var returnedObject = testGameObjectStorageProvider.GetGameObject("testKey");
+        var returnedObject = testGameObjectStorageProvider.GetGameObject(testKey);
 
         Assert.IsNull(returnedObject);
     }
     
     [Test]
-    public void Given_AGameObject_When_TheObjectIsSavedandRecalled_Then_TheReturnedObjectShouldBeTheSameObject()
+    public void Given_AGameObject_When_TheObjectIsSavedandRecalled_Then_TheSameObjectShouldBeReturned()
     {
         var testResourcesProvider = Substitute.For<IResourcesProvider>();
         var testGameObjectStorageProvider = new GameObjectStorageProvider(testResourcesProvider);
         var testObject = Substitute.For<UnityEngine.Object>() as UnityEngine.GameObject;
 
-        testGameObjectStorageProvider.SaveGameObject("testKey", testObject);
-        var returnedObject = testGameObjectStorageProvider.GetGameObject("testKey");
+        testGameObjectStorageProvider.SaveGameObject(testKey, testObject);
+        var returnedObject = testGameObjectStorageProvider.GetGameObject(testKey);
 
         Assert.AreEqual(testObject, returnedObject);
     }
@@ -34,12 +36,14 @@ public class GameObjectStorageProvider_Tests
     {
         var testResourcesProvider = Substitute.For<IResourcesProvider>();
         var testGameObjectStorageProvider = new GameObjectStorageProvider(testResourcesProvider);
-        var testObject = Substitute.For<UnityEngine.Object>() as UnityEngine.GameObject;
+        var testGameObject = Substitute.For<UnityEngine.Object>() as UnityEngine.GameObject;
 
-        testGameObjectStorageProvider.SaveGameObject("testKey", testObject);
-        testGameObjectStorageProvider.RemoveGameObject("testKey");
-        var returnedObject = testGameObjectStorageProvider.GetGameObject("testKey");
+        testGameObjectStorageProvider.SaveGameObject(testKey, testGameObject);
+        var savedObjectCheck = testGameObjectStorageProvider.GetGameObject(testKey);
+        testGameObjectStorageProvider.RemoveGameObject(testKey);
+        var returnedObject = testGameObjectStorageProvider.GetGameObject(testKey);
 
+        Assert.AreEqual(testGameObject, savedObjectCheck);
         Assert.IsNull(returnedObject);
     }
 
@@ -49,9 +53,9 @@ public class GameObjectStorageProvider_Tests
         var testResourcesProvider = Substitute.For<IResourcesProvider>();
         var testGameObjectStorageProvider = new GameObjectStorageProvider(testResourcesProvider);
         var testObject = Substitute.For<UnityEngine.Object>() as UnityEngine.GameObject;
-        testGameObjectStorageProvider.SaveGameObject("testKey", testObject);
-
-        var returnedObject = testGameObjectStorageProvider.GetCardModel("testKey");
+        
+        testGameObjectStorageProvider.SaveGameObject(testKey, testObject);
+        var returnedObject = testGameObjectStorageProvider.GetCardModel(testKey);
 
         Assert.AreEqual(testObject, returnedObject);
     }
@@ -62,7 +66,7 @@ public class GameObjectStorageProvider_Tests
         var testResourcesProvider = Substitute.For<IResourcesProvider>();
         var testGameObjectStorageProvider = new GameObjectStorageProvider(testResourcesProvider);
 
-        testGameObjectStorageProvider.GetCardModel("testKey");
+        testGameObjectStorageProvider.GetCardModel(testKey);
 
         testResourcesProvider.Received().LoadAll<UnityEngine.GameObject>("Monsters");
     }

@@ -3,15 +3,13 @@ using NUnit.Framework;
 
 public class PlayerPrefsProvider_Tests
 {
-    PlayerPrefsProvider playerPrefsProvider;
-
     string testKey = "testKey";
     string testString = "testString";
 
     [Test]
-    public void Given_PlayerPrefsHasKey_When_HasKeyIsCalled_Then_ReturnsTrue()
+    public void Given_PlayerPrefsContainsAGivenKey_When_HasKeyIsCalled_Then_ReturnsTrue()
     {
-        playerPrefsProvider = new PlayerPrefsProvider();
+        var playerPrefsProvider = new PlayerPrefsProvider();
         UnityEngine.PlayerPrefs.SetString(testKey, testString);
 
         bool hasKey = playerPrefsProvider.HasKey(testKey);
@@ -20,11 +18,12 @@ public class PlayerPrefsProvider_Tests
     }
 
     [Test]
-    public void Given_PlayerPrefsDoesntHaveKey_When_HasKeyIsCalled_Then_ReturnsFalse()
+    public void Given_PlayerPrefsDoesntContainAGivenKey_When_HasKeyIsCalled_Then_ReturnsFalse()
     {
-        playerPrefsProvider = new PlayerPrefsProvider();
+        var playerPrefsProvider = new PlayerPrefsProvider();
         if(UnityEngine.PlayerPrefs.HasKey(testKey))
         {
+            //Ensure Test Key has been deleted from internal memory
             UnityEngine.PlayerPrefs.DeleteKey(testKey);
         }        
 
@@ -34,9 +33,9 @@ public class PlayerPrefsProvider_Tests
     }
 
     [Test]
-    public void Given_PlayerPrefsHasKey_WhenGetStringIsCalled_Then_ReturnsString()
+    public void Given_PlayerPrefsContainsKey_When_GetStringIsCalled_Then_ReturnsStringAssociatedWithTheGivenKey()
     {
-        playerPrefsProvider = new PlayerPrefsProvider();
+        var playerPrefsProvider  = new PlayerPrefsProvider();
         UnityEngine.PlayerPrefs.SetString(testKey, testString);
 
         string providerString = playerPrefsProvider.GetString(testKey);
@@ -45,10 +44,9 @@ public class PlayerPrefsProvider_Tests
     }
 
     [Test]
-    public void Given_ProperInputRecieved_When_SetStringIsCalled_Then_StringIsAddedToPlayerPrefsWithKey()
+    public void Given_ValidInputIsRecieved_When_SetStringIsCalled_Then_StringIsAddedToPlayerPrefsUnderGivenKey()
     {
-        playerPrefsProvider = new PlayerPrefsProvider();
-        UnityEngine.PlayerPrefs.SetString(testKey, testString);
+        var playerPrefsProvider = new PlayerPrefsProvider();
 
         playerPrefsProvider.SetString(testKey, testString);
 

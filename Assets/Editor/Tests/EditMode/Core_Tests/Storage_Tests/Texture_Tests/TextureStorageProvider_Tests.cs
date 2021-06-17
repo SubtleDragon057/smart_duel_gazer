@@ -4,17 +4,16 @@ using NUnit.Framework;
 
 public class TextureStorageProvider_Tests
 {
-    private TextureStorageProvider textureStorageProvider;
     private string testKey = "TestKey";
     
     [Test]
-    public void Given_AnImageAsATexture_When_TheImageIsSaved_Then_TheSameImageShouldBeReturned()
+    public void Given_AnImageAsATexture_When_TheImageIsSavedAndRecalled_Then_TheSameImageShouldBeReturned()
     {
-        textureStorageProvider = new TextureStorageProvider();
+        var testTextureStorageProvider = new TextureStorageProvider();
         var testTexture = Substitute.For<UnityEngine.Texture>();
 
-        textureStorageProvider.SaveTexture(testKey, testTexture);
-        var textureToTestAgainst = textureStorageProvider.GetTexture(testKey);
+        testTextureStorageProvider.SaveTexture(testKey, testTexture);
+        var textureToTestAgainst = testTextureStorageProvider.GetTexture(testKey);
 
         Assert.AreEqual(testTexture, textureToTestAgainst);
     }
@@ -22,10 +21,10 @@ public class TextureStorageProvider_Tests
     [Test]
     public void Given_AnEmptyTexture_When_TheImageIsSaved_Then_TheImageShouldReturnNull()
     {
-        textureStorageProvider = new TextureStorageProvider();
+        var testTextureStorageProvider = new TextureStorageProvider();
 
-        textureStorageProvider.SaveTexture(testKey, null);
-        var textureToTestAgainst = textureStorageProvider.GetTexture(testKey);
+        testTextureStorageProvider.SaveTexture(testKey, null);
+        var textureToTestAgainst = testTextureStorageProvider.GetTexture(testKey);
 
         Assert.IsNull(textureToTestAgainst);
     }

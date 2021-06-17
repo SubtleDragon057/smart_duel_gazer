@@ -9,7 +9,7 @@ public class ConnectionStorageProvider_Tests
     private string testPort = "8080";
     
     [Test]
-    public void GetConnectionInfoTest()
+    public void Given_ValidConnectionInfo_When_ConnectionInfoIsSavedAndRecalled_Then_TheSameConnectionInfoShouldBeReturned()
     {
         var testConnectionInfoModel = new ConnectionInfoModel(testIP, testPort);
         var testPlayerPrefsProvider = new PlayerPrefsProvider();

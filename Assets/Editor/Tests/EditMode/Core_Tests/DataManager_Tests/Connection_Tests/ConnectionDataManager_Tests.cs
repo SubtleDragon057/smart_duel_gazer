@@ -10,7 +10,7 @@ public class ConnectionDataManager_Tests
     string testPort = "testPort";
     
     [Test]
-    public void Given_ValidConnectionInfo_When_ConnectionInfoIsSavedAndCalled_Then_ConnectionInfoIsReturned()
+    public void Given_ValidConnectionInfo_When_ConnectionInfoIsSavedAndCalled_Then_TheGivenConnectionInfoShouldBeReturned()
     {
         var testPlayerPrefsProvider = new PlayerPrefsProvider();
         var testConnectionStorageProvider = new ConnectionStorageProvider(testPlayerPrefsProvider);
